@@ -24,6 +24,7 @@
     "@angular/router": "^14.2.0",
     "@googlemaps/js-api-loader": "^1.14.3",
     "@googlemaps/markermanager": "^1.0.29",
+    "ngx-papaparse": "^5.1.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"
@@ -32,6 +33,9 @@
     "@angular-devkit/build-angular": "^14.2.3",
     "@angular/cli": "~14.2.3",
     "@angular/compiler-cli": "^14.2.0",
+    "@types/google-maps": "^3.2.3",
+    "@types/google.maps": "^3.50.1",
+    "@types/googlemaps": "^3.43.3",
     "@types/jasmine": "~4.0.0",
     "jasmine-core": "~4.3.0",
     "karma": "~6.4.0",
