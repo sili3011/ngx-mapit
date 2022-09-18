@@ -1,0 +1,138 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "ngx-mapit": {
+      "projectType": "library",
+      "root": "projects/ngx-mapit",
+      "sourceRoot": "projects/ngx-mapit/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ngx-mapit/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-mapit/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-mapit/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-mapit/src/test.ts",
+            "tsConfig": "projects/ngx-mapit/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-mapit/karma.conf.js"
+          }
+        }
+      }
+    },
+    "WhereAreMyAliensAt": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/where-are-my-aliens-at",
+      "sourceRoot": "projects/where-are-my-aliens-at/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/where-are-my-aliens-at",
+            "index": "projects/where-are-my-aliens-at/src/index.html",
+            "main": "projects/where-are-my-aliens-at/src/main.ts",
+            "polyfills": "projects/where-are-my-aliens-at/src/polyfills.ts",
+            "tsConfig": "projects/where-are-my-aliens-at/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/where-are-my-aliens-at/src/favicon.ico",
+              "projects/where-are-my-aliens-at/src/assets"
+            ],
+            "styles": [
+              "projects/where-are-my-aliens-at/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/where-are-my-aliens-at/src/environments/environment.ts",
+                  "with": "projects/where-are-my-aliens-at/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "WhereAreMyAliensAt:build:production"
+            },
+            "development": {
+              "browserTarget": "WhereAreMyAliensAt:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "WhereAreMyAliensAt:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/where-are-my-aliens-at/src/test.ts",
+            "polyfills": "projects/where-are-my-aliens-at/src/polyfills.ts",
+            "tsConfig": "projects/where-are-my-aliens-at/tsconfig.spec.json",
+            "karmaConfig": "projects/where-are-my-aliens-at/karma.conf.js",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/where-are-my-aliens-at/src/favicon.ico",
+              "projects/where-are-my-aliens-at/src/assets"
+            ],
+            "styles": [
+              "projects/where-are-my-aliens-at/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    }
+  }
+}

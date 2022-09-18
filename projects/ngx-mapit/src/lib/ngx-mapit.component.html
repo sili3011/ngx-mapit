@@ -1,0 +1,18 @@
+<div *ngIf="!loadedMap || !loadedUI" class="loading-container">
+  <span>Loading map...</span>
+</div>
+<div
+  *ngIf="loadedMap"
+  [ngStyle]="{ filter: loadedUI ? '' : 'opacity(0)' }"
+  class="height-100"
+  style="display: flex"
+>
+  <google-map
+    id="map"
+    class="gmap"
+    [zoom]="8"
+    [center]="{ lat: lat, lng: lng }"
+    [options]="options"
+  >
+  </google-map>
+</div>

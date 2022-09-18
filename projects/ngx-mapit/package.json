@@ -1,0 +1,16 @@
+{
+  "name": "ngx-mapit",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^14.2.0",
+    "@angular/core": "^14.2.0",
+    "@angular/google-maps": "^14.2.1",
+    "@angular/platform-browser": "^14.2.0",
+    "@angular/platform-browser-dynamic": "^14.2.0",
+    "@googlemaps/js-api-loader": "^1.14.3",
+    "@googlemaps/markermanager": "^1.0.29"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}
