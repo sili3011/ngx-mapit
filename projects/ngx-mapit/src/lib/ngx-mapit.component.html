@@ -1,7 +1,8 @@
-<div *ngIf="!loadedMap" class="loading-container">
-  <span>Loading map...</span>
+<div *ngIf="!secrets || !loadedMap" class="loading-container">
+  <span *ngIf="secrets">Loading map...</span>
+  <span *ngIf="!secrets">NO API KEY. PLEASE CONFIGURE YOUR SECRETS FILE.</span>
 </div>
-<div *ngIf="loadedMap" style="height: 100%; display: flex">
+<div *ngIf="secrets && loadedMap" style="height: 100%; display: flex">
   <google-map
     id="map"
     class="gmap"

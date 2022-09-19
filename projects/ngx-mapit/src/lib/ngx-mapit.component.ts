@@ -11,6 +11,11 @@ import { GoogleMap } from '@angular/google-maps';
 import { Libraries, Loader } from '@googlemaps/js-api-loader';
 import { MarkerManager } from '@googlemaps/markermanager';
 
+export interface MapSecrets {
+  API_KEY: string;
+  MAP_ID?: string;
+}
+
 export interface MarkerData {
   lat: number;
   lng: number;
@@ -25,43 +30,71 @@ export interface MarkerData {
   styleUrls: ['./ngx-mapit.component.scss'],
 })
 export class NgxMapitComponent implements OnInit, OnChanges {
-  private isMobile = false;
+  private _isMobile = false;
 
   public loadedMap = false;
 
+  // minimum is 1
+  @Input()
+  minmumDistance = 1;
+  @Input()
+  // maximum is 19
+  maximumDistance = 19;
+  // starting latitude
   @Input()
   lat = 0;
+  // starting longitude
   @Input()
   lng = 0;
+  // google maps configuration
+  // map id and placement of default UI
   @Input()
   options: google.maps.MapOptions = {};
+  // secrets
+  // API_KEY is MANDATORY
+  // MAP_ID is optional
   @Input()
-  secrets: any = {};
+  secrets!: MapSecrets;
+  // data markers should be created for
   @Input()
   data: any[] = [];
+
+  // FLAGS
+  // wether or not enable PLACES API for address search
+  // NEEDS TO BE ENABLED IN USERS GCLOUD
   @Input()
   usePlaces = false;
+  // wether or not markers should be clickable aka disable info windows
   @Input()
   clickableMarkers = false;
+  // wether or not to show the markers wikipedia page in its info window
   @Input()
   queryWikipedia = false;
+  // wether or not to show the markers title in its info window
+  @Input()
+  showTitle = true;
+  // ask user for permission and use their location at initialization
+  // ONLY WORKS ON DESKTOP
+  @Input()
+  startAtUserLocation = true;
 
   @ViewChild(GoogleMap) map!: GoogleMap;
 
-  private infoWindows: Map<string, google.maps.InfoWindow> = new Map();
-  private manager!: MarkerManager;
+  private _infoWindows: Map<string, google.maps.InfoWindow> = new Map();
+  private _manager!: MarkerManager;
 
+  private WIKIPEDIA_URL = 'https://en.wikipedia.org/wiki/';
   private WIKIPEDIA_API_URL = 'https://en.wikipedia.org/api/rest_v1/page/html/';
 
-  constructor(private cd: ChangeDetectorRef, private http: HttpClient) {}
+  constructor(private _cd: ChangeDetectorRef, private _http: HttpClient) {}
 
   public ngOnInit(): void {
-    this.isMobile =
+    this._isMobile =
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(
         navigator.userAgent
       );
 
-    if (!this.isMobile) {
+    if (this.startAtUserLocation && !this._isMobile) {
       navigator.geolocation.getCurrentPosition((position) => {
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
@@ -75,17 +108,17 @@ export class NgxMapitComponent implements OnInit, OnChanges {
     }
 
     new Loader({
-      apiKey: this.secrets.GMAP_API_KEY,
+      apiKey: this.secrets.API_KEY,
       version: 'weekly',
       libraries: libraries,
     })
       .load()
       .then(() => {
         this.loadedMap = true;
-        this.cd.detectChanges();
-        this.manager = new MarkerManager(this.map.googleMap!, {});
+        this._cd.detectChanges();
+        this._manager = new MarkerManager(this.map.googleMap!, {});
         if (this.data.length) {
-          this.setMarkers();
+          this._setMarkers();
         }
       });
   }
@@ -98,12 +131,12 @@ export class NgxMapitComponent implements OnInit, OnChanges {
       JSON.stringify(currentValue) !==
         JSON.stringify(changes['data']?.previousValue)
     ) {
-      this.setMarkers();
+      this._setMarkers();
     }
   }
 
-  private setMarkers(): void {
-    this.manager.clearMarkers();
+  private _setMarkers(): void {
+    this._manager.clearMarkers();
 
     const markersWithContent = this.data.map((data: any) => ({
       marker: new google.maps.Marker({
@@ -127,12 +160,12 @@ export class NgxMapitComponent implements OnInit, OnChanges {
       );
     }
 
-    this.manager.addMarkers(
+    this._manager.addMarkers(
       markersWithContent.map((m) => m.marker),
       1,
       19
     );
-    this.manager.refresh();
+    this._manager.refresh();
   }
 
   private _clickedMarker(
@@ -143,29 +176,58 @@ export class NgxMapitComponent implements OnInit, OnChanges {
     const id = marker.getTitle();
     console.log(id);
     if (id) {
-      if (this.infoWindows.has(id)) {
-        this.infoWindows.get(id)?.close();
-        this.infoWindows.delete(id);
+      if (this._infoWindows.has(id)) {
+        this._infoWindows.get(id)?.close();
+        this._infoWindows.delete(id);
       } else {
         if (this.queryWikipedia && wikiSearchString) {
-          this.http
-            .get(this.WIKIPEDIA_API_URL + id.replace(' ', '_'), {
+          this._http
+            .get(this.WIKIPEDIA_API_URL + wikiSearchString.replace(' ', '_'), {
               responseType: 'text',
             })
             .subscribe({
               next: (resp: string) => {
-                //this.fillInfoWindow(resp, marker, id);
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(resp, 'text/html');
+                doc.body.querySelectorAll('a[href^="./"]').forEach((href) => {
+                  href.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    window.open(
+                      this.WIKIPEDIA_URL +
+                        href.getAttribute('href')?.replace('./', ''),
+                      '_blank'
+                    );
+                  });
+                });
+                doc.body.classList.add('body-window');
+                this._fillInfoWindow(marker, id, resp);
+              },
+              error: () => {
+                const content = `<div>No wikipedia entry found for ${marker.getTitle()}</div>`;
+                this._fillInfoWindow(marker, id, content);
               },
             });
+        } else {
+          this._fillInfoWindow(marker, id, content?.outerHTML);
         }
-        const infoWinodw = new google.maps.InfoWindow({
-          position: marker.getPosition(),
-          content: content,
-          pixelOffset: new google.maps.Size(0, -32),
-        });
-        infoWinodw.open(this.map.googleMap);
-        this.infoWindows.set(id, infoWinodw);
       }
     }
+  }
+
+  private _fillInfoWindow(
+    marker: google.maps.Marker,
+    id: string,
+    content?: string
+  ): void {
+    if (this.showTitle) {
+      content = `<h1>${marker.getTitle()}</h1>` + content;
+    }
+    const infoWinodw = new google.maps.InfoWindow({
+      position: marker.getPosition(),
+      content: content,
+      pixelOffset: new google.maps.Size(0, -32),
+    });
+    infoWinodw.open(this.map.googleMap);
+    this._infoWindows.set(id, infoWinodw);
   }
 }

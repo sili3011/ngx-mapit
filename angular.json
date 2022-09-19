@@ -58,9 +58,7 @@
               "projects/where-are-my-aliens-at/src/favicon.ico",
               "projects/where-are-my-aliens-at/src/assets"
             ],
-            "styles": [
-              "projects/where-are-my-aliens-at/src/styles.scss"
-            ],
+            "styles": ["projects/where-are-my-aliens-at/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -126,9 +124,7 @@
               "projects/where-are-my-aliens-at/src/favicon.ico",
               "projects/where-are-my-aliens-at/src/assets"
             ],
-            "styles": [
-              "projects/where-are-my-aliens-at/src/styles.scss"
-            ],
+            "styles": ["projects/where-are-my-aliens-at/src/styles.scss"],
             "scripts": []
           }
         }
