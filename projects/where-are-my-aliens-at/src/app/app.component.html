@@ -1,4 +1,5 @@
 <title>{{ title }}</title>
+<input #searchInput type="text" class="searchInput" />
 <ngx-mapit
   [options]="options"
   [secrets]="secrets"
@@ -6,4 +7,6 @@
   [clickableMarkers]="true"
   [queryWikipedia]="true"
   [showTitle]="true"
+  [usePlaces]="true"
+  [placesInput]="searchInput"
 ></ngx-mapit>

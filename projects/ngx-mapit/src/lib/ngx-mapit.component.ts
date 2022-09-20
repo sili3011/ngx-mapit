@@ -58,6 +58,9 @@ export class NgxMapitComponent implements OnInit, OnChanges {
   // data markers should be created for
   @Input()
   data: any[] = [];
+  // input element that should be used for searching places
+  @Input()
+  placesInput?: HTMLInputElement;
 
   // FLAGS
   // wether or not enable PLACES API for address search
@@ -118,7 +121,7 @@ export class NgxMapitComponent implements OnInit, OnChanges {
         this._cd.detectChanges();
         this._manager = new MarkerManager(this.map.googleMap!, {});
         if (this.data.length) {
-          this._setMarkers();
+          this._initUI();
         }
       });
   }
@@ -131,11 +134,40 @@ export class NgxMapitComponent implements OnInit, OnChanges {
       JSON.stringify(currentValue) !==
         JSON.stringify(changes['data']?.previousValue)
     ) {
-      this._setMarkers();
+      this._initUI();
     }
   }
 
-  private _setMarkers(): void {
+  private _initUI(): void {
+    if (!this.usePlaces && this.placesInput) {
+      this.placesInput.value = 'PLACES API IS NOT ENABLED!';
+      this.placesInput.disabled = true;
+      console.warn(
+        'You provided an input element for places search but did not set the usePlaces flag ([usePlaces]="true").)'
+      );
+    }
+
+    if (this.usePlaces && this.placesInput) {
+      const searchBox = new google.maps.places.SearchBox(this.placesInput);
+      this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(
+        this.placesInput
+      );
+      searchBox.addListener('places_changed', () => {
+        const places = searchBox.getPlaces();
+        if (!places || places.length === 0) {
+          return;
+        }
+        const bounds = new google.maps.LatLngBounds();
+        places.forEach((place) => {
+          if (place.geometry!.viewport) {
+            bounds.union(place.geometry!.viewport);
+          } else {
+            bounds.extend(place.geometry!.location!);
+          }
+        });
+        this.map.fitBounds(bounds);
+      });
+    }
     this._manager.clearMarkers();
 
     const markersWithContent = this.data.map((data: any) => ({
