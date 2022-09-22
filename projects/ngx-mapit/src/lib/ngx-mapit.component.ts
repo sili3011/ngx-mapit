@@ -37,7 +37,7 @@ export class NgxMapitComponent implements OnInit, OnChanges {
 
   // minimum is 1
   @Input()
-  minmumDistance = 1;
+  minimumDistance = 1;
   @Input()
   // maximum is 19
   maximumDistance = 19;
@@ -169,7 +169,6 @@ export class NgxMapitComponent implements OnInit, OnChanges {
         this.map.fitBounds(bounds);
       });
     }
-    this._manager.clearMarkers();
 
     const markersWithContent = this.data.map((data: any) => ({
       marker: new google.maps.Marker({
@@ -190,8 +189,8 @@ export class NgxMapitComponent implements OnInit, OnChanges {
 
     this._manager.addMarkers(
       markersWithContent.map((m) => m.marker),
-      1,
-      19
+      this.minimumDistance,
+      this.maximumDistance
     );
     this._manager.refresh();
   }
