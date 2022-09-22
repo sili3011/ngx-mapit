@@ -3,7 +3,7 @@
 ngx-mapit provides an easy to use component to visualize big sets of data (at least 80.000+ entries) with GoogleMaps while maintaining a stable performance, even on mobile.
 
 ## Demo
-[WhereAreMyAliensAt](https://sili3011.github.io/ngx-mapit/)
+[WhereAreMyAliensAt](https://sili3011.github.io/ngx-mapit/dist/where-are-my-aliens-at/)
 
 ## How to use
 
