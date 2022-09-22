@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build-lib": "ng build ngx-mapit",
-    "build-app": "ng build WhereAreMyAliensAt --base-href=https://sili3011.github.io/ngx-mapit/dist/where-are-my-aliens-at",
+    "build-app": "ng build WhereAreMyAliensAt --base-href=https://sili3011.github.io/ngx-mapit/dist/where-are-my-aliens-at/",
     "serve-app": "ng serve WhereAreMyAliensAt"
   },
   "private": true,
