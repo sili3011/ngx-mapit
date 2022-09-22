@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
 
   public ngOnInit(): void {
     this._http
-      .get('/assets/aliens.csv', { responseType: 'blob' })
+      .get('assets/aliens.csv', { responseType: 'blob' })
       .subscribe((file) => {
         this._csvParser.parse(file, {
           header: true,
