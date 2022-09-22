@@ -63,6 +63,10 @@
           },
           "configurations": {
             "production": {
+              "index": {
+                "input": "projects/where-are-my-aliens-at/src/index.prod.html",
+                "output": "index.html"
+              },
               "budgets": [
                 {
                   "type": "initial",
