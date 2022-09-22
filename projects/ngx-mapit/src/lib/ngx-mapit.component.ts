@@ -17,10 +17,11 @@ export interface MapSecrets {
 }
 
 export interface MarkerData {
+  id: string;
   lat: number;
   lng: number;
-  title: string;
-  content?: HTMLElement;
+  title?: string;
+  content?: any;
   wikiSearchString?: string;
 }
 
@@ -63,7 +64,7 @@ export class NgxMapitComponent implements OnInit, OnChanges {
   placesInput?: HTMLInputElement;
 
   // FLAGS
-  // wether or not enable PLACES API for address search
+  // wether or not to enable PLACES API for address search
   // NEEDS TO BE ENABLED IN USERS GCLOUD
   @Input()
   usePlaces = false;
@@ -176,18 +177,13 @@ export class NgxMapitComponent implements OnInit, OnChanges {
         title: data.title,
         clickable: this.clickableMarkers,
       }),
-      content: data.content,
-      wikiSearchString: data.wikiSearchString,
+      data: data,
     }));
 
     if (this.clickableMarkers) {
       markersWithContent.forEach((marker) =>
         window.google.maps.event.addListener(marker.marker, 'click', () =>
-          this._clickedMarker(
-            marker.marker,
-            marker.content,
-            marker.wikiSearchString
-          )
+          this._clickedMarker(marker.marker, marker.data)
         )
       );
     }
@@ -200,23 +196,21 @@ export class NgxMapitComponent implements OnInit, OnChanges {
     this._manager.refresh();
   }
 
-  private _clickedMarker(
-    marker: google.maps.Marker,
-    content?: HTMLElement,
-    wikiSearchString?: string
-  ): void {
-    const id = marker.getTitle();
-    console.log(id);
+  private _clickedMarker(marker: google.maps.Marker, data: MarkerData): void {
+    const id = data.id;
     if (id) {
       if (this._infoWindows.has(id)) {
         this._infoWindows.get(id)?.close();
         this._infoWindows.delete(id);
       } else {
-        if (this.queryWikipedia && wikiSearchString) {
+        if (this.queryWikipedia && data.wikiSearchString) {
           this._http
-            .get(this.WIKIPEDIA_API_URL + wikiSearchString.replace(' ', '_'), {
-              responseType: 'text',
-            })
+            .get(
+              this.WIKIPEDIA_API_URL + data.wikiSearchString.replace(' ', '_'),
+              {
+                responseType: 'text',
+              }
+            )
             .subscribe({
               next: (resp: string) => {
                 const parser = new DOMParser();
@@ -232,7 +226,7 @@ export class NgxMapitComponent implements OnInit, OnChanges {
                   });
                 });
                 doc.body.classList.add('body-window');
-                this._fillInfoWindow(marker, id, resp);
+                this._fillInfoWindow(marker, id, doc.body);
               },
               error: () => {
                 const content = `<div>No wikipedia entry found for ${marker.getTitle()}</div>`;
@@ -240,7 +234,7 @@ export class NgxMapitComponent implements OnInit, OnChanges {
               },
             });
         } else {
-          this._fillInfoWindow(marker, id, content?.outerHTML);
+          this._fillInfoWindow(marker, id, JSON.stringify(data.content));
         }
       }
     }
@@ -249,16 +243,16 @@ export class NgxMapitComponent implements OnInit, OnChanges {
   private _fillInfoWindow(
     marker: google.maps.Marker,
     id: string,
-    content?: string
+    content?: any
   ): void {
     if (this.showTitle) {
       content = `<h1>${marker.getTitle()}</h1>` + content;
     }
     const infoWinodw = new google.maps.InfoWindow({
       position: marker.getPosition(),
-      content: content,
       pixelOffset: new google.maps.Size(0, -32),
     });
+    infoWinodw.setContent(content);
     infoWinodw.open(this.map.googleMap);
     this._infoWindows.set(id, infoWinodw);
   }

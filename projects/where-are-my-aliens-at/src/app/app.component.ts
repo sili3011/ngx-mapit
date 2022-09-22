@@ -40,12 +40,14 @@ export class AppComponent implements OnInit {
           dynamicTyping: true,
           complete: (result) => {
             this.data = result.data.map((d: any) => ({
+              id: `${d.datetime}${d.latitude}${d.longitude}`.replace(' ', '_'),
               lat: d.latitude,
               lng: d.longitude,
               title: `${d.datetime}${d.latitude}${d.longitude}`.replace(
                 ' ',
                 '_'
               ),
+              content: d,
               wikiSearchString: 'aliens',
             }));
           },
