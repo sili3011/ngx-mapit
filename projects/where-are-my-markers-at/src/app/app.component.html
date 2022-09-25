@@ -1,0 +1,29 @@
+<title>{{ title }}</title>
+<h1 style="margin: 1rem">Hey dude, where are my markers?</h1>
+<div class="container">
+  <div style="position: relative; width: 100%; margin: 0 1rem 1rem 0">
+    <textarea
+      id="input"
+      placeholder="Marker data"
+      class="mat-textfield"
+      [formControl]="textControl"
+    ></textarea>
+    <label for="input" class="mat-label">Your marker data</label>
+  </div>
+  <ngx-mapit
+    style="margin-left: auto"
+    [options]="options"
+    [secrets]="secrets"
+    [data]="data"
+    [clickableMarkers]="true"
+    [queryWikipedia]="false"
+    [showTitle]="true"
+    [usePlaces]="true"
+  ></ngx-mapit>
+</div>
+<div
+  style="width: 100%; margin: 1rem; display: flex; place-content: space-around"
+>
+  <span>Count of markers in data: {{ data.length }}</span>
+  <span>Example: {{ example }}</span>
+</div>

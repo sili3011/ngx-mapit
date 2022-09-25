@@ -8,8 +8,10 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build-lib": "ng build ngx-mapit",
-    "build-app": "ng build WhereAreMyAliensAt --configuration production",
-    "serve-app": "ng serve WhereAreMyAliensAt"
+    "build-aliens": "ng build WhereAreMyAliensAt --configuration production",
+    "serve-aliens": "ng serve WhereAreMyAliensAt",
+    "build-markers": "ng build WhereAreMyMarkersAt --configuration production",
+    "serve-markers": "ng serve WhereAreMyMarkersAt"
   },
   "private": true,
   "dependencies": {
