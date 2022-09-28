@@ -9,6 +9,7 @@
     [zoom]="8"
     [center]="{ lat: lat, lng: lng }"
     [options]="options"
+    (idle)="onIdle()"
   >
   </google-map>
 </div>

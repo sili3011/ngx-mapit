@@ -34,6 +34,7 @@ export class NgxMapitComponent implements OnInit, OnChanges {
   private _isMobile = false;
 
   public loadedMap = false;
+  private initializedMap = false;
 
   // minimum is 1
   @Input()
@@ -121,10 +122,17 @@ export class NgxMapitComponent implements OnInit, OnChanges {
         this.loadedMap = true;
         this._cd.detectChanges();
         this._manager = new MarkerManager(this.map.googleMap!, {});
-        if (this.data.length) {
-          this._initUI();
-        }
       });
+  }
+
+  public onIdle(): void {
+    if (!this.initializedMap) {
+      this._manager.refresh();
+      if (this.data.length) {
+        this._initUI();
+      }
+      this.initializedMap = true;
+    }
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
