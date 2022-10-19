@@ -1,6 +1,6 @@
 {
   "name": "ngx-mapit",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -53,5 +53,6 @@
     "map",
     "angular",
     "ng"
-  ]
+  ],
+  "homepage": "https://github.com/sili3011/ngx-mapit"
 }
