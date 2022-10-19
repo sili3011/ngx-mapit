@@ -6,6 +6,7 @@
 /bazel-out
 /dist/*
 !/dist/where-are-my-aliens-at
+!/dist/where-are-my-markers-at
 
 # Node
 /node_modules
